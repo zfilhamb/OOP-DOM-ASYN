@@ -8,7 +8,7 @@
   </head>
   <body>
     <div class="container">
-        <form name="formPendaftaran" method="dialog" onsubmit="return validateForm()">
+        <form id="form-pendaftaran" name="formPendaftaran" method="dialog" >
             <div class="mt-2">
                 <label>Nama</label>
                 <input id="nama" name="nama" type="text" placeholder="Nama lengkap" class="form-control" autocomplete="off">
@@ -21,7 +21,7 @@
                 <label>Uang Sangu</label>
                 <input id="uangSangu"  name="uangSangu" type="number" placeholder="Rupiah" class="form-control">
             </div>
-            <button onclick="return new getData()" class="btn btn-primary mt-2">Submit</button>
+            <button type="submit" class="btn btn-primary mt-2">Submit</button>
         </form>
         <H2>DATA PESERTA</H2>
         <table class="table table-stripped" id="tabelData">
@@ -36,52 +36,106 @@
    
 
     <script>
-        let dataPengguna =[]
-        const namaInput = document.getElementById("nama")
-        const umurInput = document.getElementById("umur")
-        const uangSanguInput = document.getElementById("uangSangu")
-        class getData{
-            constructor(nama, umur, uangSangu){
-                this.nama=nama;
-                this.umur=umur;
-                this.uangSangu=uangSangu;
-            }
-              
-    
-            }
-            const pengguna = new getData()
-            dataPengguna.push(pengguna)
-            pengguna.nama=namaInput.value
-            pengguna.umur=umurInput.value
-            pengguna.uangSangu=uangSanguInput.value
-            console.log(pengguna)
+    const validasiPeserta = [];
+    let dataPengguna = [];
+    const namaInput = document.getElementById("nama");
+    const umurInput = document.getElementById("umur");
+    const uangSanguInput = document.getElementById("uangSangu");
 
+    console.log(document);
+    class Validasi{
+        constructor(namaInput,umurInput,uangSanguInput){
+        this.name = namaInput.value;
+        this.age = parseInt(umurInput.value);
+        this.allowance = parseInt(uangSanguInput.value);
+
+        this.isNameValid = this.validateName();
+        this.isAgeValid = this.validateAge();
+        this.isUangSanguValid = this.validateUangSangu();
+    }
         
-            const node = document.createElement("li")
-            const value_li = document.createTextNode(namaInput.value)
-            node.appendChild(value_li)
-            document.getElementById("namaPendaftar").appendChild(node)
+    validateName() {
+        return this.name
+    }
+    validateAge(){
+        return this.age >= 25
+    }
+    validateUangSangu(){
+        return this.allowance >= 100000 && this.allowance <=10000
+    }
+}
+    const formValidasi = document.getElementById("form-pendaftaran");
+    formValidasi.addEventListener("submit", (e) => {
+      e.preventDefault();
+    const validasiPendaftaran = new Validasi (namaInput.value, umurInput.value, uangSanguInput.value)
+    validasiPeserta.push(validasiPendaftaran);
+    console.log(validasiPeserta)
+    })
+    class Pengguna {
+      constructor(nama, umur, uangSangu) {
+        this.nama = nama;
+        this.umur = umur;
+        this.uangSangu = uangSangu;
+      }
+    }
 
-            function validateForm() {
-            if (document.forms["formPendaftaran"]["nama"].value.length < 10) {
-                alert("Nama Tidak Boleh Kosong");
-                document.forms["formPendaftaran"]["nama"].focus();
-                return false;
-            }
-            if (document.forms["formPendaftaran"]["umur"].value < 25 ) {
-                alert("Umur Kurang Mencukupi");
-                document.forms["formPendaftaran"]["umur"].focus();
-                return false;
-            }
-            if (document.forms["formPendaftaran"]["uangSangu"].value <100000 || document.forms["formPendaftaran"]["uangSangu"].value >1000000) {
-                alert("Uang Sangu Kekurangan/Kelebihan");
-                document.forms["formPendaftaran"]["uangSangu"].focus();
-                return false;
-            }
-        }
+    const formPendaftaran = document.getElementById("form-pendaftaran");
+    console.log(formPendaftaran);
+
+    formPendaftaran.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const penggunaBaru = new Pengguna(namaInput.value, umurInput.value, uangSanguInput.value);
+
+      dataPengguna.push(penggunaBaru);
+      console.log(dataPengguna);
+    });
+
+    let btnAdd = document.querySelector("button");
+    let table = document.getElementById("tabelData");
+
+    let nameInput = document.querySelector('#nama');
+    let ageInput = document.querySelector('#umur');
+    let allowenceInput = document.querySelector('#uangSangu');
+
+    btnAdd.addEventListener('click', () =>{
+        let name = nameInput.value;
+        let age = ageInput.value;
+        let allowance = allowenceInput.value;
+
+        let template = `
+                    <tr>
+                        <td>${name}</td>
+                        <td>${age}</td>
+                        <td>${allowance}</td>
+                    </tr>`;
+    
+        table.innerHTML += template;
+    })
+
+    function validateForm() {
+      if (document.forms["formPendaftaran"]["nama"].value.length < 10) {
+        alert("Nama Tidak Boleh Kosong");
+        document.forms["formPendaftaran"]["nama"].focus();
+        return false;
+      }
+      if (document.forms["formPendaftaran"]["umur"].value < 25) {
+        alert("Umur Kurang Mencukupi");
+        document.forms["formPendaftaran"]["umur"].focus();
+        return false;
+      }
+      if (
+        document.forms["formPendaftaran"]["uangSangu"].value < 100000 ||
+        document.forms["formPendaftaran"]["uangSangu"].value > 1000000
+      ) {
+        alert("Uang Sangu Kekurangan/Kelebihan");
+        document.forms["formPendaftaran"]["uangSangu"].focus();
+        return false;
+      }
+    }
+    
     </script>
     
-
+    
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
   </body>
 </html>
